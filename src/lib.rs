@@ -14,7 +14,8 @@ struct SubscribeBody {
     name: String,
 }
 
-async fn subscribe(_form: Form<SubscribeBody>) -> impl Responder {
+async fn subscribe(form: Form<SubscribeBody>) -> impl Responder {
+    println!("{:?} {:?}", form.email, form.name);
     HttpResponse::Ok()
 }
 
