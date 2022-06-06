@@ -1,4 +1,5 @@
 use std::net::TcpListener;
+use std::sync::Once;
 
 #[tokio::test]
 async fn health_check() {
@@ -64,12 +65,21 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     }
 }
 
+static INIT: Once = Once::new();
+static mut ADDRESS: Option<String> = None;
+
 fn spawn_app() -> String {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind address");
-    let port = listener.local_addr().unwrap().port();
-    let server = zero2prod::run(listener).expect("Failed to run server");
+    unsafe {
+        INIT.call_once(|| {
+            let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind address");
+            let port = listener.local_addr().unwrap().port();
+            let server = zero2prod::run(listener).expect("Failed to run server");
 
-    tokio::spawn(server);
+            tokio::spawn(server);
 
-    format!("http://127.0.0.1:{}", port)
+            ADDRESS = Some(format!("http://127.0.0.1:{}", port));
+        });
+
+        ADDRESS.as_ref().unwrap().to_string()
+    }
 }
