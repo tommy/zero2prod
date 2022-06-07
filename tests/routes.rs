@@ -1,6 +1,8 @@
 use std::net::TcpListener;
 use std::sync::Once;
 
+use zero2prod::startup::run;
+
 #[tokio::test]
 async fn health_check() {
     let address = spawn_app();
@@ -73,7 +75,7 @@ fn spawn_app() -> String {
         INIT.call_once(|| {
             let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind address");
             let port = listener.local_addr().unwrap().port();
-            let server = zero2prod::run(listener).expect("Failed to run server");
+            let server = run(listener).expect("Failed to run server");
 
             tokio::spawn(server);
 

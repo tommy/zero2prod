@@ -1,0 +1,6 @@
+application_port = 8000
+
+[database]
+host = "localhost"
+password = "password"
+username = "postgres"
