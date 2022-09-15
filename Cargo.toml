@@ -28,7 +28,7 @@ features = [
   "chrono",
   "migrate",
 ]
-version = "0.5.13"
+version = "0.6.1"
 
 [dev-dependencies]
 reqwest = "0.11"
